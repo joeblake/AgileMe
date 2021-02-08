@@ -15,10 +15,16 @@ Django uses your template and the data to produce a page of browser-ready HTML, 
 If you are looking to check out the code most of the action is happening in a couple places:
 
 boards/urls.py
+
+
 agileme/urls.py
+
 boards/views.py
+
 boards/templates/boards/login.html
+
 boards/templates/boards/index.html
+
 boards/templates/boards/scrum.html
 
 
