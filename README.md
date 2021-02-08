@@ -24,5 +24,6 @@ boards/templates/boards/scrum.html
 
 Plans for the future:
 Further flesh out Scrum page with urgency metrics
+
 Configure HTTPS
 
