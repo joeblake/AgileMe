@@ -1,0 +1,173 @@
+{% load socialaccount %}
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale = 1, shrink-to-fit=no" >
+
+    <title>Log in or Register</title>
+  </head>
+  <body style = "background-color:#343a40">
+    <div class = "container.fluid bg-dark" style = " margin:auto; background-color: #white">
+      <div class ="row bg-dark my-3 mx-0">
+      </div>
+
+
+
+<!--********** Title Card **********************************-->
+
+      <div class = "row mt-3 mx-0">
+        <div class = "col"></div>
+        <div class = "col-med-6 p-4 bg-secondary border rounded text-center text-white">
+          <h5> Welcome to AgileMe </h5>
+          <p> AgileMe is a personal organization tool inspired by the Agile methodology. Log in to try it out!</p>
+        </div>
+        <div class = "col"></div>
+      </div>
+
+<!--********** Error Row/Card **********************************-->
+{% if form.errors %}
+    <div class = "row my-1 mx-0">
+      <div class = "col"></div>
+      <div class = "col-med-6  rounded text-center text-white">
+      <div class = "row">
+        {% for field in form %}
+        {% for error in field.errors %}
+        <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+        </div>
+        {% endfor %}
+      </div>
+
+  </div>
+  <div class = "col"></div>
+</div>
+{% endif %}
+{% if user_creation_form.errors %}
+    <div class = "row my-1 mx-0">
+      <div class = "col"></div>
+      <div class = "col-med-6 rounded text-white">
+        <div class = "row">
+          <div class = "col">
+          </div>
+          <div class = "col-med-6">
+            <div class="alert alert-danger">
+            <ul>
+              {% for field in user_creation_form %}
+              {% for error in field.errors %}
+              <li><strong>{{ error|escape }}</strong></li>
+              {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class = "col">
+        </div>
+      </div>
+        {% for error in user_creation_form.non_field_errors %}
+        <div class = "row">
+          <div class = "col">
+          </div>
+          <div class = "col-med-6">
+          <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+          </div>
+        </div>
+        <div class = "col">
+        </div>
+      </div>
+        {% endfor %}
+      </div>
+      <div class = "col"></div>
+    </div>
+  </div>
+{% endif %}
+
+<!--********** Login/Registration Row **********************************-->
+
+      <div class = "row my-3 mx-0">
+      <div class = "col"></div>
+
+
+      <!--********** Login Card **********************************-->
+
+        <div class = "col-med-3 mx-1 p-4 bg-secondary border rounded text-center text-white">
+          <form action = "/boards/login/process/" method = "post">
+            {% csrf_token %}
+          <div class = "row mb-3 justify-content-md-center">
+            Login:
+          </div>
+              <div class = "row justify-content-md-center">
+                <label for = "{{form.username.id_for_label}}">Username </label>
+              </div>
+              <div class = "row justify-content-md-center">
+                {{ form.username }}
+              </div>
+              {% if form.username.errors %}
+              <div class = "row justify-content-md-center">
+                <p>
+                {% for error in form.username.errors %}
+                  {{ error|escape }}
+                {% endfor %}
+                </p>
+              </div>
+              {% endif %}
+              <div class = "row justify-content-md-center">
+                <label for = "{{form.password.id_for_label}}">Password </label>
+              </div>
+              <div class = "row justify-content-md-center">
+                {{form.password}}
+              </div>
+
+
+              <button type="submit" class="btn btn-secondary border">Login</button>
+            </form>
+          </div>
+
+
+          <!--********** Register Card **********************************-->
+
+        <div class = "col-med-3 mx-1 p-4 bg-secondary border rounded text-center text-white ">
+          <form action = "/boards/login/createuser/" method = "post">
+            {% csrf_token %}
+            <div class = "row  mb-3 justify-content-md-center">
+              Create Account:
+            </div>
+
+            <div class = "row justify-content-md-center">
+              <label for = "{{user_creation_form.username.id_for_label}}">Username </label>
+            </div>
+            <div class = "row justify-content-md-center">
+              {{user_creation_form.username}}
+            </div>
+
+            <div class = "row justify-content-md-center">
+              <label for = "{{user_creation_form.password1.id_for_label}}">Password </label>
+            </div>
+            <div class = "row">
+              {{user_creation_form.password1}}
+            </div>
+
+            <div class = "row justify-content-md-center">
+              <label for = "{{user_creation_form.password2.id_for_label}}">Confirm Password </label>
+            </div>
+            <div class = "row">
+              {{user_creation_form.password2}}
+            </div>
+
+              <button type="submit" class="btn btn-secondary border">Login</button>
+            </form>
+        </div>
+        <div class = "col"></div>
+      </div>
+
+    </div>
+  </body>
+</html>

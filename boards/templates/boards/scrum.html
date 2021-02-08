@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+
+    <script>
+      function check_boxes(task_string){
+        var tasks = task_string.split(",")
+        result = ""
+        for(let i = 0; i< tasks.length-1;i++){
+          if(document.getElementById("t_".concat(tasks[i])).checked == true){
+            result = result.concat(tasks[i].concat(","))
+          }
+        }
+        elements = document.getElementsByClassName("task_input_mult")
+        for (let i =0; i < tasks.length; i++){
+          elements[i].value = result
+        }
+      }
+
+      function btn_toggle(btn_id, label_id){
+        btn = document.getElementById(btn_id)
+        label = document.getElementById(label_id)
+        if(btn.checked == true){
+          label.className += " active"
+        }
+        else{
+          label.className = label.className.replace(/(?:^|\s)active(?!\S)/g , '' )
+        }
+      }
+
+    </script>
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale = 1, shrink-to-fit=no" >
+
+    <title>Scrum</title>
+  </head>
+  <body style = "background-color:#343a40">
+    <div class = "container.fluid">
+
+      <div class = "row my-5 mx-0"></div>
+      <div class = "row my-4 mx-0">
+        <div class = "col"></div>
+        <div class = "col-med-6 bg-secondary border rounded text-center text-white p-4 justify-content-center">
+          <div class = "row mb-4">
+            <h5> Choose your tasks! </h5>
+          </div>
+          {% for board, task_list in board_map.items %}
+              <div class = "row" style = "margin:auto">
+                <h5>{{board.name}}</h5>
+              </div>
+
+
+
+              <div class = "btn-group-toggle" data-toggle = "buttons">
+                {% for task in task_list %}
+                <label class = "btn btn-secondary btn-block border" id = "tl_{{task.id}}">
+                  <input type = "checkbox" id = "t_{{task.id}}" autocomplete = "off" onClick = "btn_toggle('t_{{task.id}}', 'tl_{{task.id}}')">
+                  {{task.name}} : {{task.points}} points {% if task.ppd %}: {{task.ppd}} points per day{% endif %}
+                </label>
+                {% endfor %}
+            </div>
+          {% endfor %}
+            <form action = "/boards/scrum/submit/" onsubmit = "check_boxes('{{task_string}}')" id = "scrum_form", method = "post">
+              {% csrf_token %}
+              <input hidden = "True" type = "text" name = "task_ids" class = "task_input_mult">
+              <button type="submit" class="btn btn-secondary border mt-1" form = "scrum_form">Submit</button>
+            </form>
+          </div>
+        <div class = "col"></div>
+      </div>
+    </div>
+  </body>
+</html>

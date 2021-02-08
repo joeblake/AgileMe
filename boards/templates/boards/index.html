@@ -1,0 +1,188 @@
+{% load static %}
+<script>
+
+function setElement(value, element){
+  elements = document.getElementsByClassName(element)
+  for(let i =0; i < elements.length; i++){
+    elements[i].value = value
+  }
+}
+
+
+
+
+</script>
+<!-- ***************START OF DOC************************-->
+
+<!-- ************* HEAD *****************************-->
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <title> Agile Me </title>
+  <meta charset = "utf-8">
+  <meta name = "viewport" content = "width=device-width, initial-scale = 1, shrink-to-fit=no" >
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+</head>
+
+
+<!--********** BODY **********************************-->
+
+<body style = "background-color:#343a40; padding-bottom:65px">
+<div class = "container.fluid bg-dark pt-3 my-3">
+  <!--<div class = "card w-75 mt-4 bg-dark text-center" style = " margin:auto; background-color: #00E9F2">-->
+    <div class = "row fixed-top bg-secondary text-white px-4 py-1 border rounded">
+      <h5 class = "mx-3"> Welcome {{user.username}}!</h5>
+      <form action = "/boards/scrum"> <button type="submit" class="btn btn-secondary border mx-2">Scrum</button></form>
+      <form action = "/boards/logout"> <button type="submit" class="btn btn-secondary border mx-2" >Log Out</button></form>
+    </div>
+
+  {% if board_list %}
+  <div class = "row m-0 py-4">
+
+    <!--********** Scrum Tasks **********************************-->
+
+      {% if scrum_tasks %}
+      <div class = "col-lg-4 bg-secondary text-light my-4 rounded text-center border">
+      <h3 style = "text-align: center"> Scrum </h3>
+          {% for task in scrum_tasks %}
+          <ul class = "list-group mt-1">
+            <li class = "list-group-item bg-dark">
+              <p>{{ task.name }} - points: {{task.points}} - due: {{task.due_date}}</p>
+            </li>
+            <li class = "list-group-item bg-dark">
+              <form action = "/boards/do_work/" method = "post" onsubmit = "setElement({{ task.id }}, 'task_input')" id = "work_done_{{board.id}}_{{task.id}}">
+                {% csrf_token %}
+
+                  Points Done:
+                  {{ work_form.points }}
+                  <button type = "submit" class = "btn btn-secondary border" form = "work_done_{{board.id}}_{{task.id}}">Done!</button>
+                <div hidden = "true" class = "field_wrapper">
+                  <input type = "text" class = "task_input" name = "task_id">
+                </div>
+              </form>
+            </li>
+            </ul>
+          {% endfor %}
+      </div>
+      {% endif %}
+
+
+      <!--********** Boards **********************************-->
+
+      {% for board, task_list in board_map.items %}
+      <div  class = "col-lg-4 bg-secondary text-light my-4 mx-0 text-center rounded border">
+      <h3 style = "text-align: center"> {{board.name}} </h3>
+          {% for task in task_list %}
+          <ul class = "list-group mt-1">
+            <li class = "list-group-item bg-dark">
+              <p>{{ task.name }} - points: {{task.points}} - due: {{task.due_date}}</p>
+            </li>
+            <li class = "list-group-item bg-dark">
+              <form action = "/boards/do_work/" method = "post" onsubmit = "setElement({{ task.id }}, 'task_input')" id = "work_done_{{board.id}}_{{task.id}}">
+                {% csrf_token %}
+
+                  Points Done:
+                  {{ work_form.points }}
+                  <button type = "submit" class = "btn btn-secondary border" form = "work_done_{{board.id}}_{{task.id}}">Done!</button>
+                <div hidden = "true" class = "field_wrapper">
+                  <input type = "text" class = "task_input" name = "task_id">
+                </div>
+              </form>
+            </li>
+            </ul>
+          {% endfor %}
+
+          <div class = "mt-1">
+            <form autocomplete = "off" action = "/boards/process_task" method = "post" onsubmit = "setElement({{ board.id }}, 'board_input')" id = "add_task_{{board.id}}">
+              {% csrf_token %}
+              <input hidden = "true" type = "text" class = "board_input" name = "board_id" >
+              <ul class = "list-group">
+                <li class = "list-group-item bg-dark h5 mb-0"
+                <h5>Add a Task</h5>
+
+                <li class = "list-group-item bg-dark">
+                  <label for = "{{task_form.name.id_for_label}}"> Name </label>
+                  {{task_form.name}}
+                </li>
+
+                <li class = "list-group-item bg-dark">
+                  <label for = "{{task_form.points.id_for_label}}"> Points </label>
+                  {{task_form.points}}
+                </li>
+
+              {% if board.use_due_date %}
+              <li class = "list-group-item bg-dark">
+                <label for = "task_form.date.id_for_label"> Due Date </label>
+                {{task_form.date}}
+              </li>
+              {% endif %}
+            </ul>
+              <button type = "submit" class = "btn btn-secondary border mt-1" form = "add_task_{{board.id}}">Create</button>
+            </form>
+          </div>
+
+          <form action = "/boards/board_delete/" method = "post" onsubmit = "setElement({{ board.id }}, 'board_input')" id = "delete_form">
+            {% csrf_token %}
+            <input hidden = "true" type = "text" class = "board_input" name = "board_id" >
+            <button type="submit" class="btn btn-secondary border" form = "delete_form">Delete this board</button>
+          </form>
+      </div>
+        <br>
+      {% endfor %}
+  </div>
+
+
+
+  <!--********** No Boards - Intro **********************************-->
+
+{% else %}
+<div class = "row mx-0 my-5">
+  <div class = "col"></div>
+  <div class = "col-6 bg-secondary border rounded text-white mx-1 my-4 text-center">
+    <h3>Welcome to AgileMe!</h3>
+    <p>AgileMe is a personal organizational tool inspired be the Agile Scrum methodology.</p>
+    <p>There are two main concepts borrowed from Agile Scrum, Points, and the daily Scrum:
+      <ul>
+        <li class = "my-2">Points
+      simply approximate how much work a task will take. We think of a point as roughly equivalent to an
+      hour of work, but you can think of however you want!</li>
+        <li class = "my-2">'Scrum' is a feature where each day (or week, etc.)
+      you review your tasks and decide what to focus on in the short term.</li>
+      </ul>
+    </p>
+
+    <p>To use AgileMe, simply add a board below for a category of work in your life.
+      This could be School, Work, different school subjects, chores, etc. Pick a name and decide whether
+       you want your board to have due dates. Then just add tasks to the board and you're cooking with gas!</p>
+   </div>
+  <div class = "col"></div>
+</div>
+
+{% endif %}
+
+
+
+<!--********** Add a Board - bottom bar **********************************-->
+
+</div>
+<div class = "container.fluid fixed-bottom bg-secondary text-white px-4 py-1 border rounded">
+  <div>
+    <form action = "/boards/new_board/" method = "post" onsubmit = "setElement({{ user.id }}, 'user_input')">
+      {% csrf_token %}
+      <h3>Add a Board</h3>
+      <input hidden = "True" type = "text" class = "user_input" name = "user_id">
+      <label for = "{{board_form.name.id_for_label}}"> Name </label>
+      {{board_form.name}}
+      <label for = "{{board_form.use_due_date.id_for_label}}"> Use Due Dates? </label>
+      {{board_form.use_due_date}}
+      <input type = "submit" value = "Create">
+    </form>
+  </div>
+</div>
+</body>
+</html>
