@@ -4,7 +4,7 @@ Welcome to AgileMe!
 
 AgileMe is a full stack personal organization app, built using Python 3, Django, and Bootstrap.
 
-You can check it out in action at http://35.212.12.127/
+You can check it out in action at agileme.app
 
 The Django server works like this:
 It receives an http request. It matchs the path in the request with the paths defined in urls.py, and send the request to the appropriate view.
@@ -32,5 +32,7 @@ Plans for the future:
 
 Further flesh out Scrum page with urgency metrics
 
-Configure HTTPS
+Optimize for Mobile Viewing
+
+Tweak Layout
 
